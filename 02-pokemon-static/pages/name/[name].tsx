@@ -4,6 +4,7 @@ import { pokeApi } from "../../api";
 import { Layout } from "../../components/layouts";
 import { Pokemon, PokemonListResponse } from "../../interfaces";
 import { useFavorites } from "../../state/AppContext";
+import { getPokemonInfo } from "../../utils/getPokemonInfo";
 
 interface Props {
   pokemon: Pokemon;
@@ -61,22 +62,33 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=151`);
   const { results } = data;
   const allPokemons = results.map((pokemon) => pokemon.name);
+
   return {
     paths: allPokemons.map((name) => ({
-      params: { name: name },
+      params: { name },
     })),
-    fallback: false,
+    fallback: "blocking",
   };
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { name } = params as { name: string };
-  const { data: pokemon } = await pokeApi.get<Pokemon>(`/pokemon/${name}`);
+  const pokemon = await getPokemonInfo(name);
+
+  if (!pokemon) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {
       pokemon,
     },
+    revalidate: 86400,
   };
 };
 
