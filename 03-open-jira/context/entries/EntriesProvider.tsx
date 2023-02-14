@@ -1,37 +1,16 @@
-import { useReducer } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useReducer, useEffect } from "react";
+import { useSnackbar } from "notistack";
 
 import { EntriesContext, entriesReducer } from "./";
 import { Entry } from "../../interfaces";
+import { entriesApi } from "../../api";
 
 export interface EntriesState {
   entries: Entry[];
 }
 
 const Entries_INITIAL_STATE: EntriesState = {
-  entries: [
-    {
-      _id: uuidv4(),
-      description:
-        "Pendiente: Enim incididunt in incididunt ullamco qui eiusmod pariatur officia duis in nostrud consectetur nisi ut.",
-      status: "pending",
-      createdAt: Date.now(),
-    },
-    {
-      _id: uuidv4(),
-      description:
-        "En-progreso: Enim magna amet esse non mollit reprehenderit tempor ullamco exercitation ipsum dolor eiusmod.",
-      status: "in-progress",
-      createdAt: Date.now() - 100,
-    },
-    {
-      _id: uuidv4(),
-      description:
-        "Terminado: Dolore id voluptate exercitation amet aliqua et exercitation.",
-      status: "finished",
-      createdAt: Date.now() - 10,
-    },
-  ],
+  entries: [],
 };
 
 interface ProviderProps {
@@ -40,11 +19,61 @@ interface ProviderProps {
 
 export const EntriesProvider: React.FC<ProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const addNewEntry = async (description: string) => {
+    // Hago una peticion post en el backend
+    const { data } = await entriesApi.post<Entry>("/entries", { description });
+    // Con un dispatch actualizo mis entries en el frontend
+    dispatch({
+      type: "[Entry] - AddEntry",
+      payload: data,
+    });
+  };
+
+  const updateEntry = async (
+    { _id, description, status }: Entry,
+    showSnackBar = true
+  ) => {
+    try {
+      const { data } = await entriesApi.put(`/entries/${_id}`, {
+        description,
+        status,
+      });
+
+      dispatch({
+        type: "[Entry] - EntryUpdated",
+        payload: data,
+      });
+
+      if (showSnackBar) {
+        enqueueSnackbar("Entrada actualizada", {
+          variant: "success",
+          autoHideDuration: 1500,
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+        });
+      }
+    } catch (error) {}
+  };
+
+  const refreshEntries = async () => {
+    const { data } = await entriesApi.get<Entry[]>("/entries");
+    dispatch({ type: "[Entry] - InitialEntryLoad", payload: data });
+  };
+
+  useEffect(() => {
+    refreshEntries();
+  }, []);
 
   return (
     <EntriesContext.Provider
       value={{
         ...state,
+        addNewEntry,
+        updateEntry,
       }}
     >
       {children}

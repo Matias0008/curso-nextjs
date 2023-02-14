@@ -16,7 +16,7 @@ export const Layout: React.FC<Props> = ({ title = "OpenJira", children }) => {
       </Head>
       <Navbar />
       <Sidebar />
-      <Box sx={{ padding: "10px 20px" }}>{children}</Box>
+      <Box sx={{ padding: { xs: "10px", sm: "10px 20px" } }}>{children}</Box>
     </Box>
   );
 };

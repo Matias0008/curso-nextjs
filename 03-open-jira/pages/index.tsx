@@ -1,6 +1,7 @@
 import { Typography, Grid, Card, CardHeader } from "@mui/material";
 import { Layout } from "../components/layouts";
 import { EntryCard, EntryList } from "../components/ui";
+import { NewEntry } from "../components/ui/NewEntry";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
           <Grid item xs={12} sm={4}>
             <Card sx={{ height: "calc(100vh - 84px)" }}>
               <CardHeader title="Pendientes" />
+              <NewEntry />
               <EntryList status="pending" />
             </Card>
           </Grid>
