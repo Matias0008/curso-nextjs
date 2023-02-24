@@ -75,32 +75,49 @@ export const Navbar = () => {
           >
             <NextLink href="/products" passHref legacyBehavior>
               <Link>
-                <Button color={pathname === "/products" ? "primary" : "info"}>Productos</Button>
+                <Button color={pathname === "/products" ? "primary" : "info"}>
+                  Productos
+                </Button>
               </Link>
             </NextLink>
 
             <NextLink href="/category/men" passHref legacyBehavior>
               <Link>
-                <Button color={pathname === "/category/men" ? "primary" : "info"}>Hombres</Button>
+                <Button
+                  color={pathname === "/category/men" ? "primary" : "info"}
+                >
+                  Hombres
+                </Button>
               </Link>
             </NextLink>
 
             <NextLink href="/category/women" passHref legacyBehavior>
               <Link>
-                <Button color={pathname === "/category/women" ? "primary" : "info"}>Mujeres</Button>
+                <Button
+                  color={pathname === "/category/women" ? "primary" : "info"}
+                >
+                  Mujeres
+                </Button>
               </Link>
             </NextLink>
 
             <NextLink href="/category/kid" passHref legacyBehavior>
               <Link>
-                <Button color={pathname === "/category/kid" ? "primary" : "info"}>Niños</Button>
+                <Button
+                  color={pathname === "/category/kid" ? "primary" : "info"}
+                >
+                  Niños
+                </Button>
               </Link>
             </NextLink>
           </Box>
         </Box>
 
         <Box display="flex" gap={1}>
-          <IconButton sx={{ display: { xs: "flex", md: "none" } }} onClick={() => toggleMenu(true)}>
+          <IconButton
+            sx={{ display: { xs: "flex", md: "none" } }}
+            onClick={() => toggleMenu(true)}
+          >
             <SearchIcon />
           </IconButton>
           <Input
@@ -122,13 +139,20 @@ export const Navbar = () => {
           <NextLink legacyBehavior href="/cart" passHref>
             <Link>
               <IconButton>
-                <Badge badgeContent={numberOfItems > 9 ? "+9" : numberOfItems} color="primary">
+                <Badge
+                  badgeContent={numberOfItems > 9 ? "+9" : numberOfItems}
+                  color="primary"
+                >
                   <CartIcon />
                 </Badge>
               </IconButton>
             </Link>
           </NextLink>
-          <IconButton color="primary" sx={{ minWidth: "5px" }} onClick={() => toggleMenu(false)}>
+          <IconButton
+            color="primary"
+            sx={{ minWidth: "5px" }}
+            onClick={() => toggleMenu(false)}
+          >
             <MenuOutlined />
           </IconButton>
         </Box>

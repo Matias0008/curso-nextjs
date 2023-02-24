@@ -2,7 +2,8 @@ import { useEffect, useReducer } from "react";
 import Cookies from "js-cookie";
 
 import { CartContext, cartReducer } from "./";
-import { ICartProduct } from "@/interfaces";
+import { tesloApi } from "@/api";
+import { ICartProduct, ShippingAddress, IOrder } from "@/interfaces";
 
 export interface CartState {
   isLoaded: boolean;
@@ -12,16 +13,6 @@ export interface CartState {
   taxRate: number;
   total: number;
   shippingAddress?: ShippingAddress;
-}
-
-export interface ShippingAddress {
-  firstname: string;
-  lastname: string;
-  address: string;
-  city: string;
-  country: string;
-  phone: string;
-  zip: string;
 }
 
 const Cart_INITIAL_STATE: CartState = {
@@ -65,7 +56,10 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const numberOfItems = state.cart.reduce((prev, current) => current.quantity + prev, 0);
+    const numberOfItems = state.cart.reduce(
+      (prev, current) => current.quantity + prev,
+      0
+    );
     const subTotal = state.cart.reduce(
       (prev, current) => current.price * current.quantity + prev,
       0
@@ -140,14 +134,53 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
     });
   };
 
+  const createOrder = async (): Promise<{
+    hasError: boolean;
+    message: string;
+  }> => {
+    if (!state.shippingAddress) {
+      throw new Error("Falta la direccion de entrega");
+    }
+
+    const body: IOrder = {
+      orderItems: state.cart.map((p) => ({
+        ...p,
+        size: p.size!,
+      })),
+      shippingAddress: state.shippingAddress,
+      numberOfItems: state.numberOfItems,
+      taxRate: state.taxRate,
+      total: state.total,
+      subTotal: state.subTotal,
+      isPaid: false,
+    };
+
+    try {
+      const { data } = await tesloApi.post<IOrder>("/orders", body);
+      dispatch({
+        type: "[Cart] - Order complete",
+      });
+      return {
+        hasError: false,
+        message: data._id!,
+      };
+    } catch (error) {
+      return {
+        hasError: true,
+        message: "Ha ocurrido un error",
+      };
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
-        updateAddress,
         ...state,
+        updateAddress,
         addProductToCart,
         updateCartQuantity,
         deleteItemFromCart,
+        createOrder,
       }}
     >
       {children}

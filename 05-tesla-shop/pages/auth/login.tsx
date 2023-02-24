@@ -88,7 +88,10 @@ const LoginPage = () => {
                 fullWidth
                 {...register("password", {
                   required: "La contraseña es requerida",
-                  minLength: { value: 6, message: "Debe tener mínimo 6 caracteres" },
+                  minLength: {
+                    value: 6,
+                    message: "Debe tener mínimo 6 caracteres",
+                  },
                 })}
                 error={!!errors.password}
                 helperText={errors.password?.message}
@@ -111,7 +114,9 @@ const LoginPage = () => {
           <Grid item xs={12} display="flex" justifyContent="flex-end" mt={1}>
             <NextLink
               href={
-                router.query.p ? `/auth/register?p=${router.query.p.toString()}` : "/auth/register"
+                router.query.p
+                  ? `/auth/register?p=${router.query.p.toString()}`
+                  : "/auth/register"
               }
               passHref
               legacyBehavior
@@ -128,7 +133,10 @@ const LoginPage = () => {
               }
 
               return (
-                <IconButton onClick={() => signIn(provider.id)} key={provider.id}>
+                <IconButton
+                  onClick={() => signIn(provider.id)}
+                  key={provider.id}
+                >
                   {ICONS_PROVIDERS[provider.id]}
                 </IconButton>
               );
@@ -144,10 +152,10 @@ export default LoginPage;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { req, query } = ctx;
-  const { p = "/" } = query;
+  const { p = "/" } = query; // Previous path
   const session = await getSession({ req });
 
-  //* Si estamos logeados no mostramos la pagina directamente
+  //* Si estamos logeados no mostramos la pagina
   if (session) {
     return {
       redirect: {

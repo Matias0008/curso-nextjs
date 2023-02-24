@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+
 import Credentials from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 
@@ -33,7 +34,15 @@ export const authOptions = {
     updateAge: 86400,
   },
   callbacks: {
-    async jwt({ token, account, user }: { token?: any; account?: any; user?: any }) {
+    async jwt({
+      token,
+      account,
+      user,
+    }: {
+      token?: any;
+      account?: any;
+      user?: any;
+    }) {
       if (account) {
         token.accessToken = account.access_token;
         switch (account.type) {
@@ -51,7 +60,15 @@ export const authOptions = {
       }
       return token;
     },
-    async session({ session, token, user }: { session: any; token: any; user: any }) {
+    async session({
+      session,
+      token,
+      user,
+    }: {
+      session: any;
+      token: any;
+      user: any;
+    }) {
       session.accessToken = token.accessToken;
       session.user = token.user;
       return session;

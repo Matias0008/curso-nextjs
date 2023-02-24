@@ -28,7 +28,12 @@ const CartPage = () => {
       title={`Carrito de compras - ${numberOfItems} | Tesla-Shop`}
       pageDescription="Carrito de compras en la tienda"
     >
-      <Box display="flex" minHeight={"300px"} justifyContent="center" alignItems="center">
+      <Box
+        display="flex"
+        minHeight={"300px"}
+        justifyContent="center"
+        alignItems="center"
+      >
         <Grid container maxWidth={1400} margin="0 auto">
           {/* Grid item for the cart list */}
           <Grid
@@ -62,7 +67,10 @@ const CartPage = () => {
             display={{ xs: "initial", md: "flex" }}
             justifyContent={{ xs: "initial", md: "center" }}
           >
-            <Divider orientation="vertical" sx={{ display: { xs: "none", md: "block" } }} />
+            <Divider
+              orientation="vertical"
+              sx={{ display: { xs: "none", md: "block" } }}
+            />
             <Divider
               orientation="horizontal"
               sx={{ display: { xs: "block", md: "none" }, my: 3 }}
@@ -79,11 +87,18 @@ const CartPage = () => {
                 }}
                 padding={{ xs: "0px", md: "32px" }}
               >
-                <Typography variant="h2" fontFamily="Roboto" fontWeight={550} mb={{ xs: 2, md: 0 }}>
+                <Typography
+                  variant="h2"
+                  fontFamily="Roboto"
+                  fontWeight={550}
+                  mb={{ xs: 2, md: 0 }}
+                >
                   Orden
                 </Typography>
                 <Divider sx={{ my: 2, display: { xs: "none", md: "block" } }} />
-                <Divider sx={{ mt: 1, mb: 2, display: { xs: "none", md: "initial" } }} />
+                <Divider
+                  sx={{ mt: 1, mb: 2, display: { xs: "none", md: "initial" } }}
+                />
                 <OrderCheckout />
                 <Divider sx={{ my: 2, display: { xs: "block", md: "none" } }} />
               </Box>
@@ -101,13 +116,22 @@ const CartPage = () => {
                 justifyContent={{ xs: "start", md: "space-between" }}
               >
                 <NextLink href="/checkout/address" passHref legacyBehavior>
-                  <Link sx={{ width: { xs: "100%", md: "initial" } }}>
+                  <Link
+                    sx={{
+                      width: {
+                        xs: "100%",
+                        xl: "initial",
+                      },
+                    }}
+                  >
                     <Button
                       color="secondary"
                       className="circular-btn"
                       size="large"
                       fullWidth
-                      sx={{ fontSize: 19 }}
+                      sx={{
+                        fontSize: 19,
+                      }}
                     >
                       Comprar
                     </Button>
@@ -115,11 +139,21 @@ const CartPage = () => {
                 </NextLink>
 
                 <NextLink href="/products" passHref legacyBehavior>
-                  <Link sx={{ width: { xs: "100%", md: "initial" } }}>
+                  <Link
+                    sx={{
+                      width: {
+                        xs: "100%",
+                        xl: "initial",
+                      },
+                    }}
+                  >
                     <Button
                       color="primary"
                       variant="outlined"
-                      sx={{ fontWeight: 400, fontSize: 19 }}
+                      sx={{
+                        fontWeight: 400,
+                        fontSize: 19,
+                      }}
                       size="large"
                       fullWidth
                     >

@@ -1,6 +1,6 @@
-import { CartState, ShippingAddress } from "./";
+import { CartState } from "./";
 
-import { ICartProduct } from "@/interfaces";
+import { ICartProduct, ShippingAddress } from "@/interfaces";
 
 type CartActionType =
   | {
@@ -35,8 +35,15 @@ type CartActionType =
   | {
       type: "[Cart] - Update address";
       payload: ShippingAddress;
+    }
+  | {
+      type: "[Cart] - Order complete";
     };
-export const cartReducer = (state: CartState, action: CartActionType): CartState => {
+
+export const cartReducer = (
+  state: CartState,
+  action: CartActionType
+): CartState => {
   switch (action.type) {
     case "[Cart] - Update products in cart":
       return {
@@ -66,7 +73,8 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
         cart: state.cart.filter(
           (product) =>
             product._id !== action.payload._id ||
-            (product._id === action.payload._id && product.size !== action.payload.size)
+            (product._id === action.payload._id &&
+              product.size !== action.payload.size)
         ),
       };
 
@@ -87,6 +95,17 @@ export const cartReducer = (state: CartState, action: CartActionType): CartState
       return {
         ...state,
         shippingAddress: action.payload,
+      };
+    }
+
+    case "[Cart] - Order complete": {
+      return {
+        ...state,
+        cart: [],
+        numberOfItems: 0,
+        total: 0,
+        subTotal: 0,
+        taxRate: 0,
       };
     }
 

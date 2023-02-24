@@ -1,24 +1,16 @@
-import { useContext, useMemo } from "react";
-import NextLink from "next/link";
+import { useMemo } from "react";
+import { Divider, Grid, Typography, Box } from "@mui/material";
 
-import { Divider, Grid, Typography, Link, Box } from "@mui/material";
-
-import { CartContext } from "@/context/cart";
+import { IOrder } from "@/interfaces";
 import { countries, currency } from "@/utils";
 
-export const OrderSummary = () => {
-  const { shippingAddress, numberOfItems, total, subTotal, taxRate } =
-    useContext(CartContext);
-
-  if (!shippingAddress) {
-    return <></>;
-  }
-
-  const { firstname, lastname, address, phone, city, country, zip } =
-    shippingAddress!;
-  const countryMatched = countries.find(
-    (_country) => _country.code === country
-  )?.name;
+export const OrderById = ({ order }: { order: IOrder }) => {
+  const { shippingAddress } = order;
+  const countryMatched = useMemo(() => {
+    return countries.find(
+      (country) => country.code === order.shippingAddress.country
+    )?.name;
+  }, [order]);
 
   return (
     <>
@@ -28,21 +20,16 @@ export const OrderSummary = () => {
           <Typography fontFamily="Oxygen" fontSize={18} fontWeight="bold">
             Direccion de entrega
           </Typography>
-          <NextLink passHref href="/checkout/address" legacyBehavior>
-            <Link underline="always" color="#000FFF">
-              Editar
-            </Link>
-          </NextLink>
         </Box>
         <Typography fontFamily="Oxygen">
-          {firstname} {lastname}
+          {shippingAddress.firstname} {shippingAddress.lastname}
         </Typography>
-        <Typography fontFamily="Oxygen">{address}</Typography>
+        <Typography fontFamily="Oxygen">{shippingAddress.address}</Typography>
         <Typography fontFamily="Oxygen">
-          {city}, {zip}
+          {shippingAddress.city}, {shippingAddress.zip}
         </Typography>
         <Typography fontFamily="Oxygen">{countryMatched}</Typography>
-        <Typography fontFamily="Oxygen">{phone}</Typography>
+        <Typography fontFamily="Oxygen">{shippingAddress.phone}</Typography>
       </Box>
 
       <Divider sx={{ my: 2 }} />
@@ -58,21 +45,16 @@ export const OrderSummary = () => {
           <Typography fontFamily="Oxygen" fontSize={18} fontWeight="bold">
             Carrito
           </Typography>
-          <NextLink passHref href="/cart" legacyBehavior>
-            <Link underline="always" color="#000FFF">
-              Editar
-            </Link>
-          </NextLink>
         </Grid>
         <Grid item xs={12} display="flex" justifyContent={"space-between"}>
           <Typography fontFamily="Oxygen">Nro. Productos</Typography>
-          <Typography fontFamily="Oxygen">{numberOfItems}</Typography>
+          <Typography fontFamily="Oxygen">{order.numberOfItems}</Typography>
         </Grid>
 
         <Grid item xs={12} display="flex" justifyContent={"space-between"}>
           <Typography fontFamily="Oxygen">Subtotal</Typography>
           <Typography fontFamily="Oxygen">
-            {currency.format(subTotal)}
+            {currency.format(order.subTotal)}
           </Typography>
         </Grid>
 
@@ -81,7 +63,7 @@ export const OrderSummary = () => {
             Impuestos ({Number(process.env.NEXT_PUBLIC_TAX_RATE) * 100}%)
           </Typography>
           <Typography fontFamily="Oxygen">
-            {currency.format(taxRate)}
+            {currency.format(order.taxRate)}
           </Typography>
         </Grid>
 
@@ -99,7 +81,7 @@ export const OrderSummary = () => {
             Total:
           </Typography>
           <Typography variant="h2" fontWeight={550} fontFamily="Roboto">
-            {currency.format(total)}
+            {currency.format(order.total)}
           </Typography>
         </Grid>
       </Grid>

@@ -1,25 +1,53 @@
-import { useContext, useEffect } from "react";
+import { useContext, useState } from "react";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
 
-import { Box, Button, Divider, Grid, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Divider,
+  Grid,
+  Link,
+  Typography,
+} from "@mui/material";
 
 import { CartContext } from "@/context/cart";
 
 import { ShopLayout } from "@/components/layouts";
-import { CartList, Discount } from "@/components/cart";
+import { CartList } from "@/components/cart";
 import { OrderSummary } from "@/components/cart";
-import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 const SummaryPage = () => {
-  const { numberOfItems } = useContext(CartContext);
+  const router = useRouter();
+  const { numberOfItems, createOrder } = useContext(CartContext);
+  const [isPosting, setIsPosting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onCreateOrder = async () => {
+    setIsPosting(true);
+    const { hasError, message } = await createOrder();
+
+    if (hasError) {
+      setIsPosting(false);
+      setErrorMessage(message);
+    }
+
+    //* ==> Aca el message seria igual al ID de nuestra orden
+    router.replace(`/orders/${message}`);
+  };
 
   return (
     <ShopLayout
       title={`Resumen del pedido - ${numberOfItems} | Tesla-Shop`}
       pageDescription="Carrito de compras en la tienda"
     >
-      <Box display="flex" minHeight={"500px"} justifyContent="center" alignItems="center">
+      <Box
+        display="flex"
+        minHeight={"500px"}
+        justifyContent="center"
+        alignItems="center"
+      >
         <Grid container maxWidth={1400} margin="0 auto">
           {/* Grid item for the cart list */}
           <Grid item xs={12} md={7} bgcolor="#efefef" padding={"32px"}>
@@ -41,7 +69,10 @@ const SummaryPage = () => {
             display={{ xs: "initial", md: "flex" }}
             justifyContent={{ xs: "initial", md: "center" }}
           >
-            <Divider orientation="vertical" sx={{ display: { xs: "none", md: "block" } }} />
+            <Divider
+              orientation="vertical"
+              sx={{ display: { xs: "none", md: "block" } }}
+            />
             <Divider
               orientation="horizontal"
               sx={{ display: { xs: "block", md: "none" }, my: 3 }}
@@ -51,12 +82,13 @@ const SummaryPage = () => {
           {/* Grid item for the order summary */}
           <Grid item xs={12} md={4}>
             <Box bgcolor="#efefef" padding={"32px"}>
-              <Typography variant="subtitle1">Resumen ({numberOfItems})</Typography>
+              <Typography fontSize={20} fontWeight="bold">
+                Resumen ({numberOfItems})
+              </Typography>
               <Divider sx={{ mb: 2, mt: 1 }} />
               <OrderSummary />
             </Box>
 
-            <Discount />
             <Divider sx={{ my: 3 }} />
 
             <Box
@@ -67,21 +99,21 @@ const SummaryPage = () => {
               sx={{ mt: 3 }}
               flexDirection={{ xs: "column", lg: "row-reverse" }}
             >
-              <NextLink href="/checkout/summary" passHref legacyBehavior>
-                <Link>
-                  <Button
-                    color="primary"
-                    className="circular-btn"
-                    size="large"
-                    fullWidth
-                    sx={{ fontSize: 19 }}
-                  >
-                    Continuar
-                  </Button>
-                </Link>
-              </NextLink>
+              <Link sx={{ width: { xs: "100%", xl: "initial" } }}>
+                <Button
+                  color="primary"
+                  className="circular-btn"
+                  size="large"
+                  fullWidth
+                  sx={{ fontSize: 19 }}
+                  onClick={onCreateOrder}
+                  disabled={isPosting}
+                >
+                  Confirmar orden
+                </Button>
+              </Link>
               <NextLink href="/cart" passHref legacyBehavior>
-                <Link>
+                <Link sx={{ width: { xs: "100%", xl: "initial" } }}>
                   <Button
                     color="primary"
                     variant="outlined"
@@ -94,6 +126,17 @@ const SummaryPage = () => {
                 </Link>
               </NextLink>
             </Box>
+            <Chip
+              label={errorMessage}
+              color="error"
+              sx={{
+                width: "100%",
+                mt: 2,
+                fontSize: 19,
+                padding: 2.5,
+                display: errorMessage ? "initial" : "none",
+              }}
+            />
           </Grid>
         </Grid>
       </Box>

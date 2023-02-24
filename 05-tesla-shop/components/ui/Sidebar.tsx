@@ -29,6 +29,7 @@ import LoginOutlined from "@mui/icons-material/LoginOutlined";
 
 import { UIContext } from "@/context/ui";
 import { AuthContext } from "@/context/auth";
+import { DashboardOutlined } from "@mui/icons-material";
 
 export const Sidebar = () => {
   const router = useRouter();
@@ -108,14 +109,20 @@ export const Sidebar = () => {
               <ListItemText primary={"Perfil"} />
             </ListItemButton>
 
-            <ListItemButton sx={{ display: isLoggedIn ? "flex" : "none" }}>
+            <ListItemButton
+              sx={{ display: isLoggedIn ? "flex" : "none" }}
+              onClick={() => navigateTo("/orders/history")}
+            >
               <ListItemIcon>
                 <ConfirmationNumberOutlined />
               </ListItemIcon>
               <ListItemText primary={"Mis Ordenes"} />
             </ListItemButton>
 
-            <ListItemButton sx={{ display: isLoggedIn ? "flex" : "none", mb: 1 }} onClick={logout}>
+            <ListItemButton
+              sx={{ display: isLoggedIn ? "flex" : "none", mb: 1 }}
+              onClick={logout}
+            >
               <ListItemIcon>
                 <LoginOutlined />
               </ListItemIcon>
@@ -124,10 +131,13 @@ export const Sidebar = () => {
           </Box>
 
           <Box display={{ xs: "", lg: "none" }}>
-            <ListSubheader sx={{ display: { lg: "none" } }}>Categorias</ListSubheader>
+            <ListSubheader sx={{ display: { lg: "none" } }}>
+              Categorias
+            </ListSubheader>
             <ListItemButton
               sx={{
-                background: router.asPath === "/category/men" ? "black" : "white",
+                background:
+                  router.asPath === "/category/men" ? "black" : "white",
                 color: router.asPath === "/category/men" ? "white" : "black",
               }}
               onClick={() => navigateTo("/category/men")}
@@ -135,7 +145,8 @@ export const Sidebar = () => {
               <ListItemIcon>
                 <MaleOutlined
                   sx={{
-                    color: router.asPath === "/category/men" ? "white" : "black",
+                    color:
+                      router.asPath === "/category/men" ? "white" : "black",
                   }}
                 />
               </ListItemIcon>
@@ -144,7 +155,8 @@ export const Sidebar = () => {
 
             <ListItemButton
               sx={{
-                background: router.asPath === "/category/women" ? "black" : "white",
+                background:
+                  router.asPath === "/category/women" ? "black" : "white",
                 color: router.asPath === "/category/women" ? "white" : "black",
               }}
               onClick={() => navigateTo("/category/women")}
@@ -152,7 +164,8 @@ export const Sidebar = () => {
               <ListItemIcon>
                 <FemaleOutlined
                   sx={{
-                    color: router.asPath === "/category/women" ? "white" : "black",
+                    color:
+                      router.asPath === "/category/women" ? "white" : "black",
                   }}
                 />
               </ListItemIcon>
@@ -161,7 +174,8 @@ export const Sidebar = () => {
 
             <ListItemButton
               sx={{
-                background: router.asPath === "/category/kid" ? "black" : "white",
+                background:
+                  router.asPath === "/category/kid" ? "black" : "white",
                 color: router.asPath === "/category/kid" ? "white" : "black",
               }}
               onClick={() => navigateTo("/category/kid")}
@@ -169,7 +183,8 @@ export const Sidebar = () => {
               <ListItemIcon>
                 <EscalatorWarningOutlined
                   sx={{
-                    color: router.asPath === "/category/kid" ? "white" : "black",
+                    color:
+                      router.asPath === "/category/kid" ? "white" : "black",
                   }}
                 />
               </ListItemIcon>
@@ -177,9 +192,16 @@ export const Sidebar = () => {
             </ListItemButton>
           </Box>
 
-          {/* Admin */}
+          {/*//! Admin */}
           <Box sx={{ display: user?.role === "admin" ? "block" : "none" }}>
             <ListSubheader sx={{ mt: 1 }}>Admin Panel</ListSubheader>
+
+            <ListItemButton onClick={() => navigateTo("/admin/")}>
+              <ListItemIcon>
+                <DashboardOutlined />
+              </ListItemIcon>
+              <ListItemText primary={"Dashboard"} />
+            </ListItemButton>
 
             <ListItemButton>
               <ListItemIcon>
@@ -187,14 +209,15 @@ export const Sidebar = () => {
               </ListItemIcon>
               <ListItemText primary={"Productos"} />
             </ListItemButton>
-            <ListItemButton>
+
+            <ListItemButton onClick={() => navigateTo("/admin/orders")}>
               <ListItemIcon>
                 <ConfirmationNumberOutlined />
               </ListItemIcon>
               <ListItemText primary={"Ordenes"} />
             </ListItemButton>
 
-            <ListItemButton>
+            <ListItemButton onClick={() => navigateTo("/admin/users")}>
               <ListItemIcon>
                 <AdminPanelSettings />
               </ListItemIcon>

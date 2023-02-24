@@ -25,7 +25,6 @@ interface ProviderProps {
 
 export const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, Auth_INITIAL_STATE);
-  const router = useRouter();
   const { data: session, status } = useSession();
 
   /**
@@ -63,7 +62,10 @@ export const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     }
   };
 
-  const loginUser = async (email: string, password: string): Promise<boolean> => {
+  const loginUser = async (
+    email: string,
+    password: string
+  ): Promise<boolean> => {
     try {
       const { data } = await tesloApi.post("/user/login", { email, password });
       const { token, user } = data;
@@ -84,7 +86,11 @@ export const AuthProvider: React.FC<ProviderProps> = ({ children }) => {
     password: string
   ): Promise<{ hasError: boolean; message?: string }> => {
     try {
-      const { data } = await tesloApi.post("/user/register", { name, email, password });
+      const { data } = await tesloApi.post("/user/register", {
+        name,
+        email,
+        password,
+      });
       const { token, user } = data;
       Cookies.set("token", token);
       dispatch({

@@ -1,17 +1,11 @@
-import { useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
-
-import { PayPalButtons } from "@paypal/react-paypal-js";
-
-import styles from "./[id].module.css";
 
 import {
   Box,
   Card,
   CardContent,
   Chip,
-  CircularProgress,
   Divider,
   Grid,
   Typography,
@@ -21,7 +15,6 @@ import {
   CreditScoreOutlined,
   RemoveShoppingCartOutlined,
   ShopOutlined,
-  PaymentOutlined,
 } from "@mui/icons-material";
 
 import { IOrder } from "@/interfaces";
@@ -30,42 +23,12 @@ import { dbOrders } from "@/database";
 import { ShopLayout } from "@/components/layouts";
 import { CartList } from "@/components/cart";
 import { OrderById } from "@/components/order/OrderById";
-import { useRouter } from "next/router";
-import { tesloApi } from "@/api";
-
-interface OrderResponseBody {
-  status:
-    | "COMPLETED"
-    | "SAVED"
-    | "APPROVED"
-    | "VOIDED"
-    | "COMPLETED"
-    | "PAYER_ACTION_REQUIRED";
-  id: string;
-}
 
 interface Props {
   order: IOrder;
 }
 
 const OrderPage: NextPage<Props> = ({ order }) => {
-  const [isPaying, setIsPaying] = useState(false);
-  const router = useRouter();
-
-  const onOrderCompleted = async (details: OrderResponseBody) => {
-    setIsPaying(true);
-    try {
-      const { data } = await tesloApi.post("/orders/pay", {
-        transactionId: details.id,
-        orderId: order._id,
-      });
-      router.reload();
-    } catch (error) {
-      console.log(error);
-      alert("Error con el pago");
-    }
-  };
-
   return (
     <ShopLayout
       title={`Resumen de la orden - ${order._id?.substring(0, 10)}...`}
@@ -158,55 +121,13 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                     color="success"
                   />
                 ) : (
-                  <>
-                    <Box
-                      width="100%"
-                      display="flex"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Typography
-                        fontSize={{ xs: 22, lg: 20 }}
-                        fontWeight={{ xs: "bold", lg: "initial" }}
-                      >
-                        Pagar
-                      </Typography>
-                      <PaymentOutlined />
-                    </Box>
-                    <Box
-                      display={isPaying ? "flex" : "none"}
-                      justifyContent="center"
-                      width="100%"
-                      className="fadeIn"
-                    >
-                      <CircularProgress />
-                    </Box>
-                    <Box
-                      width="100%"
-                      display={isPaying ? "none" : "initial"}
-                      className="fadeIn"
-                    >
-                      <PayPalButtons
-                        className={styles.paypalDiv}
-                        createOrder={(data, actions) => {
-                          return actions.order.create({
-                            purchase_units: [
-                              {
-                                amount: {
-                                  value: order.total.toString(),
-                                },
-                              },
-                            ],
-                          });
-                        }}
-                        onApprove={(data, actions) => {
-                          return actions.order!.capture().then((details) => {
-                            onOrderCompleted(details);
-                          });
-                        }}
-                      />
-                    </Box>
-                  </>
+                  <Chip
+                    label="Pendiente de pago"
+                    sx={{ mt: 1, width: "100%", padding: 2, fontSize: 14 }}
+                    icon={<RemoveShoppingCartOutlined />}
+                    variant="outlined"
+                    color="error"
+                  />
                 )}
               </Box>
             </CardContent>
@@ -228,31 +149,12 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   const { id = "" } = query;
   const session: any = await getSession({ req });
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/auth/login?p=/orders/${id}`,
-        permanent: false,
-      },
-    };
-  }
-
   const order = await dbOrders.getOrderById(id.toString());
 
   if (!order) {
     return {
       redirect: {
-        destination: "/orders/history",
-        permanent: false,
-      },
-    };
-  }
-
-  if (order.user !== session.user._id) {
-    return {
-      redirect: {
-        destination: "/orders/history",
+        destination: "admin/orders",
         permanent: false,
       },
     };

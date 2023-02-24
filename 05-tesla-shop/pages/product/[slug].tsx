@@ -6,7 +6,7 @@ import { Box, Button, Chip, Grid, Typography } from "@mui/material";
 
 import { dbProducts } from "@/database";
 import { CartContext } from "@/context/cart";
-import { ICartProduct, IProduct, ISizes, Product } from "@/interfaces";
+import { ICartProduct, ISizes, Product } from "@/interfaces";
 
 import { ProductSlideshow, SizeSelector } from "@/components/products";
 import { ItemCounter, Price, Text } from "@/components/ui";
@@ -140,7 +140,7 @@ const SlugPage: NextPage<Props> = ({ product }) => {
                 >
                   {tempCartProduct.size
                     ? "Agregar al carrito"
-                    : "Seleccione una talla"}
+                    : "Seleccione un talle"}
                 </Button>
               )}
             </Box>
