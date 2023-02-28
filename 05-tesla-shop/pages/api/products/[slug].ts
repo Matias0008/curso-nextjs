@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { IProduct } from "@/interfaces";
+import { Product } from "@/interfaces";
 import { db } from "@/database";
 import { ProductModel } from "@/models";
 
-type Data = { message: string } | IProduct;
+type Data = { message: string } | Product;
 
 export default function handler(
   req: NextApiRequest,

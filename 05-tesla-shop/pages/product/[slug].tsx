@@ -11,6 +11,7 @@ import { ICartProduct, ISizes, Product } from "@/interfaces";
 import { ProductSlideshow, SizeSelector } from "@/components/products";
 import { ItemCounter, Price, Text } from "@/components/ui";
 import { SlugLayout } from "@/components/layouts";
+import { VALID_SIZES } from "@/constants";
 
 interface Props {
   product: Product;
@@ -37,6 +38,10 @@ const SlugPage: NextPage<Props> = ({ product }) => {
   };
 
   const onSizeChange = (size: ISizes) => {
+    if (!VALID_SIZES.includes(size)) {
+      return;
+    }
+
     setTempCartProduct({
       ...tempCartProduct,
       size,

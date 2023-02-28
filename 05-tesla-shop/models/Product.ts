@@ -1,10 +1,10 @@
 import mongoose, { Schema, model, Model } from "mongoose";
 
-import { IProduct } from "@/interfaces";
+import { IProduct, Product } from "@/interfaces";
 
 const productSchema = new Schema(
   {
-    description: { type: String, required: true },
+    description: { type: String, required: true, default: "" },
     images: [{ type: String }],
     inStock: { type: Number, required: true, default: 0 },
     price: { type: Number, required: true, default: 0 },
@@ -15,17 +15,19 @@ const productSchema = new Schema(
           values: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
           message: "{VALUE} no es un talle permitido.",
         },
+        default: "XS",
       },
     ],
     slug: { type: String, required: true, unique: true },
     tags: [{ type: String }],
-    title: { type: String, required: true },
+    title: { type: String, required: true, default: "" },
     type: {
       type: String,
       enum: {
         values: ["shirts", "pants", "hoodies", "hats", "jackets"],
         message: "{VALUE} no es un tipo permitido",
       },
+      default: "shirts",
     },
     gender: {
       type: String,
@@ -33,6 +35,7 @@ const productSchema = new Schema(
         values: ["men", "women", "kid", "unisex"],
         message: "{VALUE} no es un genero permitido",
       },
+      default: "men",
     },
   },
   {
@@ -43,7 +46,7 @@ const productSchema = new Schema(
 productSchema.index({ title: "text", tags: "text" });
 
 // Product Model
-const Product: Model<IProduct> =
+const ProductModel: Model<Product> =
   mongoose.models.Product || model("Product", productSchema);
 
-export default Product;
+export default ProductModel;

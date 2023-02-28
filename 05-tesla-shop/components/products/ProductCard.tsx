@@ -57,13 +57,13 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
                   sx={{ opacity: 0 }}
                   className="fadeIn"
                   component="img"
-                  image={`/products/${product.images[1]}`}
+                  image={product.images[1]}
                   onLoad={() => setImageLoaded(true)}
                 />
               ) : (
                 <CardMedia
                   component="img"
-                  image={`/products/${product.images[0]}`}
+                  image={product.images[0]}
                   onLoad={() => setImageLoaded(true)}
                 />
               )}

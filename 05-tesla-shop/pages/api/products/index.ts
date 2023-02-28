@@ -50,10 +50,21 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
 
   await db.disconnect();
 
+  //* ==> Esto es porque tenemos imagenes en el filesystem y otras en la nube
+  const updatedProducts = products.map((product) => {
+    product.images = product.images.map((image) => {
+      return image.includes("http")
+        ? image
+        : `${process.env.HOST_NAME}/products/${image}`;
+    });
+    return product;
+  });
+
+  console.log(updatedProducts);
   const numberOfProducts = await ProductModel.find(condition).lean().count();
 
   return res.status(200).json({
     pages: Math.ceil(numberOfProducts / limit),
-    products,
+    products: updatedProducts,
   });
 };

@@ -59,7 +59,7 @@ export const CartList: React.FC<Props> = ({
                 <Link>
                   <CardActionArea sx={{ height: "100%" }}>
                     <CardMedia
-                      image={`/products/${product.image}`}
+                      image={`${product.image}`}
                       component="img"
                       height="100%"
                     />

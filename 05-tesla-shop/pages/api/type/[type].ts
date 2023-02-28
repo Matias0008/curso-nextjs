@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { db } from "@/database";
 import { ProductModel } from "@/models";
-import { IProduct } from "@/interfaces";
+import { Product } from "@/interfaces";
 
-type Data = { message: string } | { pages: number; products: IProduct[] };
+type Data = { message: string } | { pages: number; products: Product[] };
 
 export default function handler(
   req: NextApiRequest,

@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { IProduct } from "@/interfaces";
+import { Product } from "@/interfaces";
 import { db } from "@/database";
 import { ProductModel } from "@/models";
 
-type Data = { message: string } | { pages: number; products: IProduct[] };
+type Data = { message: string } | { pages: number; products: Product[] };
 
 export default function handler(
   req: NextApiRequest,
@@ -50,6 +50,6 @@ const getProductsByFilter = async (
 
   return res.status(200).json({
     pages: Math.ceil(numberOfProducts / limit),
-    products,
+    products: products,
   });
 };
